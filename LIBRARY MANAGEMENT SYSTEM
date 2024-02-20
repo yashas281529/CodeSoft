@@ -5,7 +5,7 @@
 
 using namespace std;
 
-// Book structure to store book information
+
 struct Book {
     string title;
     string author;
@@ -13,17 +13,17 @@ struct Book {
     bool available;
 };
 
-// Borrower structure to store borrower information
+
 struct Borrower {
     string name;
     int borrowedBooks;
 };
 
-// Transaction structure to record book transactions
+
 struct Transaction {
     string bookISBN;
     string borrowerName;
-    bool checkedOut; // true for checkout, false for return
+    bool checkedOut; 
 };
 
 class Library {
@@ -82,7 +82,7 @@ public:
     }
 
     void calculateFine(const Transaction& transaction) {
-        // Implement fine calculation based on days overdue, if needed
+        
     }
 
     void searchBooks(const string& keyword) {
@@ -115,24 +115,24 @@ public:
 int main() {
     Library library(0.5); // Fine rate per day
 
-    // Add some books to the library
+    
     library.addBook({"The Great Gatsby", "F. Scott Fitzgerald", "9780743273565", true});
     library.addBook({"To Kill a Mockingbird", "Harper Lee", "9780061120084", true});
     library.addBook({"1984", "George Orwell", "9780451524935", true});
 
-    // Add some borrowers
+    
     library.addBorrower({"Alice", 0});
     library.addBorrower({"Bob", 0});
 
-    // Test book checkout and return
+    
     library.checkoutBook("9780743273565", "Alice");
     library.returnBook("9780743273565");
 
-    // Test book search
+    
     cout << "Search Results:" << endl;
     library.searchBooks("1984");
 
-    // Test bookstore location
+   
     cout << "Finding nearest bookstore location:" << endl;
     library.findBookstoreLocation();
 
