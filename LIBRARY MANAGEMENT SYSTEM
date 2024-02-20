@@ -1,0 +1,140 @@
+#include <iostream>
+#include <string>
+#include <vector>
+#include <algorithm>
+
+using namespace std;
+
+// Book structure to store book information
+struct Book {
+    string title;
+    string author;
+    string ISBN;
+    bool available;
+};
+
+// Borrower structure to store borrower information
+struct Borrower {
+    string name;
+    int borrowedBooks;
+};
+
+// Transaction structure to record book transactions
+struct Transaction {
+    string bookISBN;
+    string borrowerName;
+    bool checkedOut; // true for checkout, false for return
+};
+
+class Library {
+private:
+    vector<Book> books;
+    vector<Borrower> borrowers;
+    vector<Transaction> transactions;
+    float fineRate;
+
+public:
+    Library(float fineRate) : fineRate(fineRate) {}
+
+    void addBook(const Book& book) {
+        books.push_back(book);
+    }
+
+    void addBorrower(const Borrower& borrower) {
+        borrowers.push_back(borrower);
+    }
+
+    void checkoutBook(const string& ISBN, const string& borrowerName) {
+        auto bookIt = find_if(books.begin(), books.end(), [&](const Book& book) {
+            return book.ISBN == ISBN && book.available;
+        });
+
+        auto borrowerIt = find_if(borrowers.begin(), borrowers.end(), [&](const Borrower& borrower) {
+            return borrower.name == borrowerName;
+        });
+
+        if (bookIt != books.end() && borrowerIt != borrowers.end()) {
+            bookIt->available = false;
+            borrowerIt->borrowedBooks++;
+            transactions.push_back({ISBN, borrowerName, true});
+            cout << "Book checked out successfully." << endl;
+        } else {
+            cout << "Book or borrower not found, or book is not available." << endl;
+        }
+    }
+
+    void returnBook(const string& ISBN) {
+        auto transactionIt = find_if(transactions.begin(), transactions.end(), [&](const Transaction& transaction) {
+            return transaction.bookISBN == ISBN && transaction.checkedOut;
+        });
+
+        auto bookIt = find_if(books.begin(), books.end(), [&](const Book& book) {
+            return book.ISBN == ISBN;
+        });
+
+        if (transactionIt != transactions.end() && bookIt != books.end()) {
+            transactionIt->checkedOut = false;
+            bookIt->available = true;
+            cout << "Book returned successfully." << endl;
+        } else {
+            cout << "Book not found or not checked out." << endl;
+        }
+    }
+
+    void calculateFine(const Transaction& transaction) {
+        // Implement fine calculation based on days overdue, if needed
+    }
+
+    void searchBooks(const string& keyword) {
+        for (const auto& book : books) {
+            if (book.title.find(keyword) != string::npos ||
+                book.author.find(keyword) != string::npos ||
+                book.ISBN.find(keyword) != string::npos) {
+                cout << "Title: " << book.title << ", Author: " << book.author << ", ISBN: " << book.ISBN << endl;
+            }
+        }
+    }
+
+    void displayBooks() {
+        cout << "Library Books:" << endl;
+        for (const auto& book : books) {
+            cout << "Title: " << book.title << ", Author: " << book.author << ", ISBN: " << book.ISBN;
+            if (book.available)
+                cout << " (Available)";
+            else
+                cout << " (Not Available)";
+            cout << endl;
+        }
+    }
+
+    void findBookstoreLocation() {
+        cout << "The nearest bookstore is located at: 123 Main Street, Cityville, USA" << endl;
+    }
+};
+
+int main() {
+    Library library(0.5); // Fine rate per day
+
+    // Add some books to the library
+    library.addBook({"The Great Gatsby", "F. Scott Fitzgerald", "9780743273565", true});
+    library.addBook({"To Kill a Mockingbird", "Harper Lee", "9780061120084", true});
+    library.addBook({"1984", "George Orwell", "9780451524935", true});
+
+    // Add some borrowers
+    library.addBorrower({"Alice", 0});
+    library.addBorrower({"Bob", 0});
+
+    // Test book checkout and return
+    library.checkoutBook("9780743273565", "Alice");
+    library.returnBook("9780743273565");
+
+    // Test book search
+    cout << "Search Results:" << endl;
+    library.searchBooks("1984");
+
+    // Test bookstore location
+    cout << "Finding nearest bookstore location:" << endl;
+    library.findBookstoreLocation();
+
+    return 0;
+}
